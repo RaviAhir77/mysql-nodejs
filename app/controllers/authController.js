@@ -6,7 +6,7 @@ class authController{
 
         try{
             const result = await authModel.createUsers({name,email,username,password,usertype});
-            res.status(201).json({message : 'new user created',user : result})
+            res.status(201).json(result)
         }catch(err){
             console.log('error in a createUser : ', err)
             res.status(500).json({message : 'server error in createUser : ',err})
@@ -17,7 +17,7 @@ class authController{
         const id = req.params.id;
         try{
             const result = await authModel.findSingleUsers({id})
-            res.status(200).json({message : 'single user list', data : result})
+            res.status(200).json(result)
         }catch(error){
             console.log('error in a find single user : ', error)
             res.status(500).json({message : 'server error in single user : ',error})
@@ -27,7 +27,7 @@ class authController{
     static async allUser(req,res){
         try{
             const result = await authModel.findUsers();
-            res.status(200).json({message : 'all user', data : result})
+            res.status(200).json(result)
         }catch(error){
             console.log('error in a find single user : ', error)
             res.status(500).json({message : 'server error in single user : ',error})
@@ -39,7 +39,7 @@ class authController{
 
         try{
             const result = await authModel.updateUsers({name,username,usertype,email})
-            res.status(200).json({message : 'updated user',data : result})
+            res.status(200).json(result)
         }catch(error){
             console.log('error in a update user : ', error)
             res.status(500).json({message : 'server error update user : ',error})
@@ -51,7 +51,7 @@ class authController{
 
         try{
             const result = await authModel.deleteUsers({email})
-            res.status(200).json({message : 'deleted user',data : result})
+            res.status(200).json(result)
         }catch(error){
             console.log('error in a delete user : ', error)
             res.status(500).json({message : 'server error delete user : ',error})

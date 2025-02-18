@@ -35,7 +35,7 @@ async function insertUser(data){
             if(err){
                 reject(err)
             }else{
-                resolve({message : 'user created succsefully :',result})
+                resolve({message : 'user created succsefully :',data : result})
             }
         })          
     })
