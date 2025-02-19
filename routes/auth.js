@@ -4,7 +4,7 @@ import upload from '../utils/multer.js';
 const authRouter = express.Router()
 
 authRouter.post('/user',upload.single('image'),authController.createUser)
-
+authRouter.post('/login',authController.loginUser)
 
 
 export default authRouter

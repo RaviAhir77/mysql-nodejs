@@ -1,3 +1,4 @@
+import { query } from 'express';
 import db from '../../config/db.js'
 import bcrypt from 'bcrypt'
 
@@ -41,6 +42,31 @@ class authModel{
                 }
             })          
         })
+    }
+
+
+    //_____________ LOGIN ROUTE _________________
+
+    static async findUserByEmail(email){
+        const queryLogin = 'SELECT * FROM user WHERE email = ?'
+
+        return new Promise((resolve,reject) => {
+            db.query(queryLogin,[email],(err,result) => {
+                if(err){
+                    reject({message : 'database error',err})
+                }else if(result.length === 0){
+                    resolve(null)
+                }else{
+                    resolve(result[0])
+                }
+            })
+        })
+    }
+
+    // __________ BCRYPT COMPARE FUNCTION ____________
+
+    static async comparePass(enteredPass,storedPass){
+        return await bcrypt.compare(enteredPass,storedPass)
     }
     
 }
