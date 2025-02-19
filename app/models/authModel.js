@@ -2,12 +2,12 @@ import db from '../../config/db.js'
 import bcrypt from 'bcrypt'
 
 async function insertUser(data){
-    const {name,email,username, password, usertype} = data
+    const {name,email,username, password, usertype,image} = data
 
     const saltRound = 10;
     const hashedPassword = await bcrypt.hash(password,saltRound)
 
-    const insertQuery = 'INSERT INTO user (name,email,username,password,usertype) VALUES (?, ?, ?, ?, ?)';
+    const insertQuery = 'INSERT INTO user (name,email,username,password,usertype,image) VALUES (?, ?, ?, ?, ?, ?)';
     const validationQuery = 'SELECT * FROM user WHERE email = ? OR username = ?';
 
     return new Promise((resolve, reject) => {
@@ -31,7 +31,7 @@ async function insertUser(data){
         })
 
         //insert data in a usertable
-        db.query(insertQuery,[name,email,username,hashedPassword,usertype],(err,result) => {
+        db.query(insertQuery,[name,email,username,hashedPassword,usertype,image],(err,result) => {
             if(err){
                 reject(err)
             }else{

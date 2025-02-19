@@ -3,9 +3,10 @@ import authModel from "../models/authModel.js";
 class authController{
     static async createUser(req,res){
         const {name,email,username,password,usertype} = req.body;
+        const image = req.file ? req.file.filename : null
 
         try{
-            const result = await authModel.createUsers({name,email,username,password,usertype});
+            const result = await authModel.createUsers({name,email,username,password,usertype,image});
             res.status(201).json(result)
         }catch(err){
             console.log('error in a createUser : ', err)
