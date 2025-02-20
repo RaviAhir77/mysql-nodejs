@@ -1,13 +1,17 @@
 import express from 'express';
 import './config/db.js';
+import passport from './config/passport.js'
 import initialize from './routes/index.js';
-
+import passportRoute from './routes/passportRoutes.js'
 
 const app = express();
 app.use(express.json())
 app.use('/uploads', express.static('uploads')); 
 app.use(express.urlencoded({extended : true}))
 const PORT = 3000;
+
+app.use(passport.initialize())
+app.use('/auth',passportRoute)
 
 initialize(app)
 
