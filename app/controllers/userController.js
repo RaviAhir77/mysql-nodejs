@@ -23,6 +23,18 @@ class userController{
         }
     }
 
+    static async pagination(req,res){
+        try{
+            const page = parseInt(req.query.page) || 1;
+            const limit = parseInt(req.query.limit) || 5;
+
+            const result = await userModel.findUserPagination(page,limit)
+            res.status(200).json(result)
+        }catch(err){
+            res.status(500).json({message : 'server error in pagination',err})
+        }
+    }
+
     static async updateUserr(req,res){
         const {name,username,usertype,email} = req.body
 

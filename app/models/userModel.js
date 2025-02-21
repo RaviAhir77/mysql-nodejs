@@ -15,6 +15,42 @@ class userModel{
             })
         })
     }
+
+    static async findUserPagination(page,limit){
+        const offset = (page - 1) * limit; 
+        const allUserQuery = 'SELECT name,email,username,usertype FROM user LIMIT ? OFFSET ?';
+        const countQuery = 'SELECT COUNT(*) AS total FROM user';
+
+        return new Promise((resolve,reject) => {
+            db.query(countQuery,(err,countResult) => {
+                if(err){
+                    reject({message : 'there is not find',err})
+                }
+
+                console.log(countResult)
+                const totalUser = countResult[0].total
+
+                db.query(allUserQuery,[parseInt(limit),parseInt(offset)],(err,result) => {
+                    if(err){
+                        reject({message : 'error in a get data',err})
+                    }else if(result.length === 0){
+                        resolve({message : 'no user found', result : []})
+                    }else{
+                        resolve({
+                            message : 'user list',
+                            totalUser,
+                            totalPage : Math.ceil(totalUser/limit),
+                            currentPage : page,
+                            data : result
+                        })
+                    }
+                })
+            })
+
+
+        })
+
+    }
     
     static async findSingleUser(data){
         const {id} = data;
