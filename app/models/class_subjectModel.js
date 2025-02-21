@@ -74,6 +74,31 @@ class class_subjectModel{
         })   
     }
 
+    static async markJoin(){
+        const markJoinQuery = `SELECT 
+                            f.name AS faculty_name,
+                            s.name AS student_name,
+                            sub.subject_name,
+                            sm.marks_obtained,
+                            sm.total_marks
+                            FROM student_marks sm
+                            JOIN user s ON sm.student_id = s.id AND s.usertype = 'student'
+                            JOIN user f ON sm.teacher_id = f.id AND f.usertype = 'faculty'
+                            JOIN subject sub ON sm.subject_id = sub.id;`
+
+        return new Promise((resolve,reject) => {
+            db.query(markJoinQuery,(err,result) => {
+                if(err){
+                    reject({message : 'server side error in find marks',err})
+                }else if(result.length === 0){
+                    resolve({message : 'no marks and user found',result : []})
+                }else{
+                    resolve(result)
+                }
+            })
+        })
+    }
+
 
 }
 

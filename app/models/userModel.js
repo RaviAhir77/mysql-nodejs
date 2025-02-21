@@ -18,7 +18,7 @@ class userModel{
 
     static async findUserPagination(page,limit){
         const offset = (page - 1) * limit; 
-        const allUserQuery = 'SELECT name,email,username,usertype FROM user LIMIT ? OFFSET ?';
+        const allUserQuery = 'SELECT id,name,email,username,usertype FROM user LIMIT ? OFFSET ?';
         const countQuery = 'SELECT COUNT(*) AS total FROM user';
 
         return new Promise((resolve,reject) => {
@@ -27,7 +27,6 @@ class userModel{
                     reject({message : 'there is not find',err})
                 }
 
-                console.log(countResult)
                 const totalUser = countResult[0].total
 
                 db.query(allUserQuery,[parseInt(limit),parseInt(offset)],(err,result) => {

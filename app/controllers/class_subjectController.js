@@ -30,6 +30,16 @@ class class_subjectController{
             res.status(500).json({message : 'server error',error})
         }   
     }
+
+    static async joinMarks(req,res){
+        try{
+            const result = await class_subjectModel.markJoin();
+            res.status(200).json({message : 'user marks list',result})
+        }catch(error){
+            console.log(error)
+            res.status(500).json({message : 'server error',error})
+        }
+    }
 }
 
 export default class_subjectController
