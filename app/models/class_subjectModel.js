@@ -76,6 +76,7 @@ class class_subjectModel{
 
     static async markJoin(){
         const markJoinQuery = `SELECT 
+                            sm.id AS marksId,
                             f.name AS faculty_name,
                             s.name AS student_name,
                             sub.subject_name,

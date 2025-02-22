@@ -38,6 +38,31 @@ class authController{
 
         res.status(200).json({message : 'login succsess',token,user})
     }
+
+    static async tokenGenerator(req,res){
+
+        const {email} = req.body;
+
+        try{
+            const findUser = await authModel.findUserByEmail(email)
+
+            if(!findUser){
+                return res.status(400).json({message : 'user not found'})
+            }
+
+            const generatedToken = await jwtGenerator.generateJwt({
+                id : findUser.id, 
+                username:findUser.username, 
+                usertype:findUser.usertype
+            })
+            res.status(200).json({message : 'token is a generated',generatedToken})
+
+        }catch(error){
+            res.status(500).json({message : 'error in a tokenGenerator controller',error})
+        }
+
+        
+    }
 }
 
 export default authController;
