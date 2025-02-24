@@ -5,6 +5,7 @@ import classSubjectRouter from './class_subject.js';
 import otpRouter from './sendOtp.js';
 import groupRouter from './group.js';
 import marksRouter from './marksAdd.js';
+import utilRouter from './utilRouter.js';
 
 const initialize = (app) => {
     app.use('/', authRouter)
@@ -12,7 +13,8 @@ const initialize = (app) => {
     app.use('/',classSubjectRouter)
     app.use('/',otpRouter)
     app.use('/',groupRouter)
-    app.use('/',marksRouter)
+    app.use('/',marksRouter);
+    app.use('/',utilRouter)
 }
 
 export default initialize;
