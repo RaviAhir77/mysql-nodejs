@@ -1,72 +1,5 @@
-import {generatePdf} from "../models/generatePdf.js";
-import generateHtml from "../../utils/mailHtml.js";
-import puppeteer from "puppeteer";
-import db from '../../config/db.js';
-import generateInvoiceHtml from "../../utils/generateInvoiceHtml.js";
-import fs from 'fs/promises'
-
-class utilController{
-    static async pdfSender(req,res){
-        res.setHeader('Content-disposition','attachment;filename="output.pdf"')
-        res.setHeader('Content-type','application/pdf')
-        
-        await generatePdf(res)
-    }
-
-    static async pdfGenerator(req, res) {
-        try {
-            const users = await new Promise((resolve, reject) => {
-                db.query('SELECT id,name,email FROM user', (err, result) => {
-                    if (err) {
-                        reject(err)
-                    } else if (result.length === 0) {
-                        resolve({ message: 'no user found', result: [] })
-                    } else {
-                        resolve(result)
-                    }
-                })
-            })
-    
-            const htmlInvoice = generateHtml(users)
-            
-            const browser = await puppeteer.launch();
-            const page = await browser.newPage();
-            await page.setContent(htmlInvoice);
-            const pdfPath = 'invoice.pdf'
-            const pdf = await page.pdf({path : pdfPath,format:'A4'})
-            await browser.close()
-
-            res.set({
-                'Content-Type': 'application/pdf',
-            });
-
-            res.send(pdf)
-        } catch (error) {
-            console.error('PDF Generation Error:', error);
-            res.status(500).json({ message: 'Error generating PDF', error: error.message })
-        }
-    }
-
-
-    static async generatePdf(req, res) {
-        try {
-            const browser = await puppeteer.launch({
-                headless: 'new',
-                args: ['--no-sandbox', '--disable-setuid-sandbox'],
-                dumpio: true,
-            });
-            const page = await browser.newPage();
-    
-            console.log(await browser.version());
-    
-            page.on('error', err => console.error('PAGE ERROR:', err));
-            page.on('pageerror', err => console.error('PAGE JS ERROR:', err));
-            page.on('console', msg => console.log('PAGE CONSOLE:', msg.type(), msg.text()));
-            page.on('requestfailed', request => console.error('REQUEST FAILED:', request.url(), request.failure().errorText));
-            page.on('response', response => {if (response.status() >= 400) {console.error('BAD RESPONSE:', response.url(), response.status());}});
-            
-            
-            await page.setContent(`
+const generateInvoiceHtml = () => {
+    return `
         <html>
         <head>
             <style>
@@ -141,42 +74,15 @@ class utilController{
                     <p>(Tax Rate) 0%: $0</p>
                     <p><strong>Invoice Total: $5000</strong></p>
                 </div>
-                
+                <div class="download-btn">
+                    <a href="http://localhost:3000/pdf-generator" class="button">Download Invoice</a>
+                </div>
             </div>
 
             
         </body>
         </html>
-    `, { waitUntil: 'networkidle0' });
-    
-            await page.screenshot({ path: 'debug.png' });
-            const pageContent = await page.content();
-            console.log("Page Content : ", pageContent);
-    
-            const pdfBuffer = await page.pdf({
-                format: 'A4',
-                printBackground: true,
-                margin: { top: '20px', right: '20px', bottom: '20px', left: '20px' }
-            });
-    
-            console.log("PDF Buffer Length:", pdfBuffer.length); // Log the buffer length
-    
-            await browser.close();
-    
-            // Set headers BEFORE sending the response
-            res.setHeader('Content-Disposition', 'attachment; filename="invoice.pdf"');
-            res.setHeader('Content-Type', 'application/pdf');
-            
-            res.setHeader('Content-Length', pdfBuffer.length);
-            res.end(pdfBuffer, 'binary');
-    
-        } catch (error) {
-            console.error('Error generating PDF:', error);
-            res.status(500).json({ message: 'Failed to generate PDF', error: error.toString() });
-        }
-    }
-    
-    
-}
+    `;
+};
 
-export default utilController
+export default generateInvoiceHtml;
