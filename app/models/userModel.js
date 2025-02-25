@@ -52,8 +52,12 @@ class userModel{
     }
     
     static async findSingleUser(data){
-        const {id} = data;
+        const {id,userId} = data;
         const findSingleUser = 'SELECT * FROM user WHERE id = ?'
+
+        if(id != userId){
+            return 'please enter your id'
+        }
     
         return new Promise((resolve,reject) => {
             db.query(findSingleUser,[id],(err,results) => {

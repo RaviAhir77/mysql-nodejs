@@ -4,8 +4,9 @@ import userModel from "../models/userModel.js";
 class userController{
     static async singleUser(req,res){
         const id = req.params.id;
+        const userId = req.user.id
         try{
-            const result = await userModel.findSingleUser({id})
+            const result = await userModel.findSingleUser({id,userId})
             res.status(200).json(result)
         }catch(error){
             console.log('error in a find single user : ', error)
