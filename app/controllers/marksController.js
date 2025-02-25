@@ -1,5 +1,6 @@
 import marksModel from "../models/marksModel.js";
 
+
 class marksController{
     static async addMarks(req,res){
         const {student_id,subject_id,teacher_id,marks_obtained,total_marks} = req.body;
@@ -21,8 +22,8 @@ class marksController{
         }
 
         try{
-            const result = await marksModel.getMarks({id})
-            res.status(200).json({result})
+            const {data,source} = await marksModel.getMarks({id})
+            res.status(200).json({source : source,result : data})
         }catch(error){
             console.log(error)
             res.status(500).json({message : 'marks not finded',error})

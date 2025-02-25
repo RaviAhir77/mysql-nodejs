@@ -1,5 +1,18 @@
 import db from '../../config/db.js';
 
+const cache = {};
+const CACHE_EXPIRY = 60 * 1000; 
+
+
+setInterval(() => {
+    const now = Date.now();
+    for (const key in cache) {
+        if (cache[key].expiry < now) {
+            delete cache[key];
+        }
+    }
+}, 30 * 1000); 
+
 class marksModel{
     static async insertMarks(data){
         const {student_id,subject_id,teacher_id,marks_obtained,total_marks} = data;
@@ -24,6 +37,10 @@ class marksModel{
     static async getMarks(data){
         const {id} = data
 
+        if (cache[id] && cache[id].expiry > Date.now()) {
+            return {data : cache[id].data, source : 'catch'}; // Return cached data
+        }
+
         const findQuery = `
             SELECT 
                 u.name AS student_name, 
@@ -43,7 +60,11 @@ class marksModel{
                 }else if(result.length === 0){
                     resolve({message : 'no marks found',result : []})
                 }else{
-                    resolve(result)
+                    cache[id] = {
+                        data: result,
+                        expiry: Date.now() + CACHE_EXPIRY,
+                    };
+                    resolve({data : result, source : 'database'})
                 }
             })
         })
