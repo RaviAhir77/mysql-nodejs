@@ -20,6 +20,34 @@ class marksModel{
             })
         });
     }
+
+    static async getMarks(data){
+        const {id} = data
+
+        const findQuery = `
+            SELECT 
+                u.name AS student_name, 
+                s.subject_name, 
+                sm.marks_obtained, 
+                sm.total_marks
+            FROM student_marks sm
+            JOIN user u ON sm.student_id = u.id
+            JOIN subject s ON sm.subject_id = s.id
+            WHERE u.id = ? AND u.usertype = 'student';
+        `
+
+        return new Promise((resolve,reject) => {
+            db.query(findQuery,[id],(err,result) => {
+                if(err){
+                    reject({message : 'something wrong',err})
+                }else if(result.length === 0){
+                    resolve({message : 'no marks found',result : []})
+                }else{
+                    resolve(result)
+                }
+            })
+        })
+    }
 }
 
 export default marksModel;
