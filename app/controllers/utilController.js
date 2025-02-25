@@ -163,7 +163,6 @@ class utilController{
     
             await browser.close();
     
-            // Set headers BEFORE sending the response
             res.setHeader('Content-Disposition', 'attachment; filename="invoice.pdf"');
             res.setHeader('Content-Type', 'application/pdf');
             
