@@ -26,6 +26,7 @@
     "passport-facebook": "^3.0.0",
     "pdfkit": "^0.16.0",
     "pdfkit-table": "^0.1.99",
-    "puppeteer": "^24.3.0"
+    "puppeteer": "^24.3.0",
+    "xlsx": "^0.18.5"
   }
 }
